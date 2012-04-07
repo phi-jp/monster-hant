@@ -45,6 +45,7 @@ window.onload = function() {
         // セットアップ
         var scene = game.rootScene;
         game.rootScene.backgroundColor = "black";
+        game.monsterInterval = 120;
         
         // 背景
         bg = new AvatarBG(1);
@@ -59,12 +60,32 @@ window.onload = function() {
         // アバターモンスター
         monsterList = [];
         
+        // タイマー表示
+        var timerLabel = new Label();
+        scene.addChild(timerLabel);
+        timerLabel.moveTo(10, 10);
+        timerLabel.color = "white";
+        timerLabel.text = "";
+        
         game.onenterframe = function() {
             // モンスター生成
-            if (game.frame % 120 == 0) {
+            
+            if (game.frame % game.monsterInterval == 0) {
                 var monster = new Dragon();
                 monster.x = 240;
                 scene.addChild(monster);
+                monsterList.push(monster);
+            }
+            
+            // プレイヤーとモンスターを衝突判定
+            var playerX = player.x;
+            for (var i=0,len=monsterList.length; i<len; ++i) {
+                var m = monsterList[i];
+                if (player.posIndex == m.posIndex) {
+                    if (m.x < playerX && playerX < m.x+m.width) {
+                        console.log("hit");
+                    }
+                }
             }
             
             // 入力更新
@@ -74,6 +95,10 @@ window.onload = function() {
             input.pressDown = (input.down && !input.prevDown);
             input.prevUp    = input.up;
             input.prevDown  = input.down;
+            
+            // タイマー更新
+            var time = Math.floor(game.frame / game.fps);
+            timerLabel.text = "Time : " + time;
         };
     };
     game.start();
