@@ -10,10 +10,12 @@ var IMAGE_PATH      = "lib/enchant.js/images/";
 var BG1 = IMAGE_PATH + "avatarBg1.png";
 var BG2 = IMAGE_PATH + "avatarBg2.png";
 var BG3 = IMAGE_PATH + "avatarBg3.png";
-var DRAGON_IMAGE = EXAMPLE_PATH + "monster/bigmonster1.gif";
+var BUG_IMAGE       = EXAMPLE_PATH + "monster/monster1.gif";
+var DRAGON_IMAGE    = EXAMPLE_PATH + "monster/bigmonster1.gif";
 var RESOURCE = [
     BG1, BG2, BG3,
-    DRAGON_IMAGE
+    BUG_IMAGE,
+    DRAGON_IMAGE,
 ];
 
 // 定数
@@ -52,7 +54,7 @@ window.onload = function() {
         
         // アバターモンスター
         monster = new Dragon();
-        monster.x = 220;
+        monster.x = 240;
         scene.addChild(monster);
         
         game.onenterframe = function() {
@@ -92,7 +94,19 @@ var Player = Class.create(Avatar, {
         if (input.pressDown && this.posIndex < 2) {
             this.down();
         }
-        this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
+        
+        // 左右移動
+        if (input.left) {
+            this.x -= 4;
+            this.action = "run";
+        }
+        else if (input.right) {
+            this.x += 4;
+            this.action = "run";
+        }
+        else {
+            this.action = "stop";
+        }
     },
     
     updateY: function() {
@@ -116,6 +130,12 @@ var BaseMonster = Class.create(AvatarMonster, {
     
     onenterframe: function() {
         if (this.update) this.update();
+        
+        // 画面外に出たら削除
+        if (this.x < -100) {
+            this.parentNode.removeChild(this);
+            alert();
+        }
     },
     
     updateY: function() {
@@ -133,6 +153,16 @@ var BaseMonster = Class.create(AvatarMonster, {
         this.x -= 2;
     },
 });
+
+// 虫
+var Bug = Class.create(BaseMonster, {
+    initialize: function() {
+        BaseMonster.call(this, game.assets[BUG_IMAGE]);
+        
+        this.updateY();
+    }
+});
+
 
 // ドラゴン
 var Dragon = Class.create(BaseMonster, {
