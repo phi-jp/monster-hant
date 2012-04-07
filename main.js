@@ -7,6 +7,8 @@ enchant();
 // リソース
 var EXAMPLE_PATH    = "lib/enchant.js/examples/avatar/";
 var IMAGE_PATH      = "lib/enchant.js/images/";
+
+var AVATAR_CODE     = "1:3:0:2009:2109:27540";
 var BG1 = IMAGE_PATH + "avatarBg1.png";
 var BG2 = IMAGE_PATH + "avatarBg2.png";
 var BG3 = IMAGE_PATH + "avatarBg3.png";
@@ -27,6 +29,7 @@ var CHARACTER_STEP_Y = 45;
 var game = null;
 var bg   = null;
 var player = null;
+var enemyList = null;
 
 window.onload = function() {
     game = new Game(320, 320);
@@ -48,7 +51,7 @@ window.onload = function() {
         scene.addChild(bg);
         
         // プレイヤー
-        player = new Player("1:2:1:2004:21230:22480");
+        player = new Player();
         scene.addChild(player);
         player.y = CHARACTER_BASE_Y;
         
@@ -71,8 +74,8 @@ window.onload = function() {
 
 // プレイヤー
 var Player = Class.create(Avatar, {
-    initialize: function(code) {
-        Avatar.call(this, code);
+    initialize: function() {
+        Avatar.call(this, AVATAR_CODE);
         
         this.posIndex = 0;
         this.updateY();
@@ -99,13 +102,16 @@ var Player = Class.create(Avatar, {
         if (input.left) {
             this.x -= 4;
             this.action = "run";
+            this.left();
         }
         else if (input.right) {
             this.x += 4;
             this.action = "run";
+            this.right();
         }
         else {
             this.action = "stop";
+            this.right();
         }
     },
     
@@ -122,8 +128,9 @@ var BaseMonster = Class.create(AvatarMonster, {
         
         this.action = "appear";
         this.posIndex = Math.floor(Math.random()*3);
-        this.update = this.appear;
         this.offsetY = 0;
+        this.speed   = 2;
+        this.update = this.appear;
         
         this.updateY();
     },
@@ -134,7 +141,6 @@ var BaseMonster = Class.create(AvatarMonster, {
         // 画面外に出たら削除
         if (this.x < -100) {
             this.parentNode.removeChild(this);
-            alert();
         }
     },
     
@@ -150,16 +156,17 @@ var BaseMonster = Class.create(AvatarMonster, {
     },
     
     advance: function() {
-        this.x -= 2;
+        this.x -= this.speed;
     },
 });
+
 
 // 虫
 var Bug = Class.create(BaseMonster, {
     initialize: function() {
         BaseMonster.call(this, game.assets[BUG_IMAGE]);
         
-        this.updateY();
+        this.speed = 2;
     }
 });
 
@@ -169,6 +176,7 @@ var Dragon = Class.create(BaseMonster, {
     initialize: function() {
         BaseMonster.call(this, game.assets[DRAGON_IMAGE]);
         
+        this.speed = 4;
         this.offsetY = -20;
         this.updateY();
     },
