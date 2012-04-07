@@ -30,7 +30,7 @@ var PLAYER_SPEED        = 6;
 var game = null;
 var bg   = null;
 var player = null;
-var enemyList = null;
+var monsterList = null;
 
 window.onload = function() {
     game = new Game(320, 320);
@@ -57,11 +57,17 @@ window.onload = function() {
         player.y = CHARACTER_BASE_Y;
         
         // アバターモンスター
-        monster = new Dragon();
-        monster.x = 240;
-        scene.addChild(monster);
+        monsterList = [];
         
         game.onenterframe = function() {
+            // モンスター生成
+            if (game.frame % 120 == 0) {
+                var monster = new Dragon();
+                monster.x = 240;
+                scene.addChild(monster);
+            }
+            
+            // 入力更新
             var input = game.input;
             
             input.pressUp   = (input.up && !input.prevUp);
