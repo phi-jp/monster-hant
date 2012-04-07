@@ -73,21 +73,32 @@ var Player = Class.create(Avatar, {
         Avatar.call(this, code);
         
         this.posIndex = 0;
+        this.updateY();
     },
+    
     up: function() {
         --this.posIndex;
-        this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
+        this.updateY();
+    },
+    down: function() {
+        ++this.posIndex;
+        this.updateY();
     },
     onenterframe: function() {
         var input = game.input;
         if (input.pressUp && this.posIndex > 0) {
-            --this.posIndex;
+            this.up();
         }
         if (input.pressDown && this.posIndex < 2) {
-            ++this.posIndex;
+            this.down();
         }
         this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
-    }
+    },
+    
+    updateY: function() {
+        this._element.style.zIndex = this.posIndex;
+        this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
+    },
 });
 
 // モンスター
@@ -108,9 +119,10 @@ var BaseMonster = Class.create(AvatarMonster, {
     },
     
     updateY: function() {
+        this._element.style.zIndex = this.posIndex;
         this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex + this.offsetY;
     },
-    
+
     appear: function() {
         if (this.action == "stop") {
             this.update = this.advance;
@@ -127,7 +139,7 @@ var Dragon = Class.create(BaseMonster, {
     initialize: function() {
         BaseMonster.call(this, game.assets[DRAGON_IMAGE]);
         
-        this.offsetY = -10;
+        this.offsetY = -20;
         this.updateY();
     },
 });
