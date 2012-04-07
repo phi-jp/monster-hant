@@ -1,0 +1,3 @@
+[submodule "lib/enchant.js"]
+	path = lib/enchant.js
+	url = https://github.com/shi3z/enchant.js.git
