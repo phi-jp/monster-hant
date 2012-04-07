@@ -5,12 +5,15 @@
 enchant();
 
 // リソース
-var IMAGE_PATH = "lib/enchant.js/images/"
+var EXAMPLE_PATH    = "lib/enchant.js/examples/avatar/";
+var IMAGE_PATH      = "lib/enchant.js/images/";
 var BG1 = IMAGE_PATH + "avatarBg1.png";
 var BG2 = IMAGE_PATH + "avatarBg2.png";
 var BG3 = IMAGE_PATH + "avatarBg3.png";
+var DRAGON_IMAGE = EXAMPLE_PATH + "monster/bigmonster1.gif";
 var RESOURCE = [
-    BG1, BG2, BG3
+    BG1, BG2, BG3,
+    DRAGON_IMAGE
 ];
 
 // 定数
@@ -47,6 +50,11 @@ window.onload = function() {
         scene.addChild(player);
         player.y = CHARACTER_BASE_Y;
         
+        // アバターモンスター
+        monster = new BaseMonster(game.assets[DRAGON_IMAGE]);
+        monster.x = 200;
+        scene.addChild(monster);
+        
         game.onenterframe = function() {
             var input = game.input;
             
@@ -77,6 +85,19 @@ var Player = Class.create(Avatar, {
         this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
     }
 });
+
+// モンスター
+var BaseMonster = Class.create(AvatarMonster, {
+    initialize: function(img) {
+        AvatarMonster.call(this, img);
+        
+        this.action = "appear";
+        this.posIndex = Math.floor(Math.random()*3);
+        this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
+    },
+    onenterframe: function() {
+    }
+})
 
 
 
