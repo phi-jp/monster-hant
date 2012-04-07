@@ -22,8 +22,9 @@ var RESOURCE = [
 
 // 定数
 var BG_Y = 50;
-var CHARACTER_BASE_Y = BG_Y + 20;
-var CHARACTER_STEP_Y = 45;
+var CHARACTER_BASE_Y    = BG_Y + 20;
+var CHARACTER_STEP_Y    = 45;
+var PLAYER_SPEED        = 6;
 
 // グローバル変数
 var game = null;
@@ -77,6 +78,7 @@ var Player = Class.create(Avatar, {
     initialize: function() {
         Avatar.call(this, AVATAR_CODE);
         
+        this.speed = PLAYER_SPEED;
         this.posIndex = 0;
         this.updateY();
     },
@@ -100,12 +102,12 @@ var Player = Class.create(Avatar, {
         
         // 左右移動
         if (input.left) {
-            this.x -= 4;
+            this.x -= this.speed;
             this.action = "run";
             this.left();
         }
         else if (input.right) {
-            this.x += 4;
+            this.x += this.speed;
             this.action = "run";
             this.right();
         }
