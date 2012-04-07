@@ -21,6 +21,7 @@ var CHARACTER_STEP_Y = 45;
 // グローバル変数
 var game = null;
 var bg   = null;
+var player = null;
 
 window.onload = function() {
     game = new Game(320, 320);
@@ -42,40 +43,47 @@ window.onload = function() {
         scene.addChild(bg);
         
         // プレイヤー
-        player = new Avatar("2:2:1:2004:21230:22480");
+        player = new Player("1:2:1:2004:21230:22480");
         scene.addChild(player);
         player.y = CHARACTER_BASE_Y;
-        player.posIndex = 0;
-        player.onenterframe = function() {
-            var input = game.input;
-            if (input.pressUp && this.posIndex > 0) {
-                --this.posIndex;
-            }
-            if (input.pressDown && this.posIndex < 2) {
-                ++this.posIndex;
-            }
-            this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
-        };
+        
         game.onenterframe = function() {
             var input = game.input;
-            if (input.up && !input.prevUp) {
-                input.pressUp = true;
-            }
-            else {
-                input.pressUp = false;
-            }
-            if (input.down && !input.prevDown) {
-                input.pressDown = true;
-            }
-            else {
-                input.pressDown = false;
-            }
-            input.prevUp   = input.up;
-            input.prevDown = input.down;
+            
+            input.pressUp   = (input.up && !input.prevUp);
+            input.pressDown = (input.down && !input.prevDown);
+            input.prevUp    = input.up;
+            input.prevDown  = input.down;
         };
     };
     game.start();
 };
+
+// プレイヤー
+var Player = Class.create(Avatar, {
+    initialize: function(code) {
+        Avatar.call(this, code);
+        
+        this.posIndex = 0;
+    },
+    onenterframe: function() {
+        var input = game.input;
+        if (input.pressUp && this.posIndex > 0) {
+            --this.posIndex;
+        }
+        if (input.pressDown && this.posIndex < 2) {
+            ++this.posIndex;
+        }
+        this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
+    }
+});
+
+
+
+
+
+
+
 
 
 
