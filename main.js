@@ -51,8 +51,8 @@ window.onload = function() {
         player.y = CHARACTER_BASE_Y;
         
         // アバターモンスター
-        monster = new BaseMonster(game.assets[DRAGON_IMAGE]);
-        monster.x = 200;
+        monster = new Dragon();
+        monster.x = 220;
         scene.addChild(monster);
         
         game.onenterframe = function() {
@@ -74,6 +74,10 @@ var Player = Class.create(Avatar, {
         
         this.posIndex = 0;
     },
+    up: function() {
+        --this.posIndex;
+        this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
+    },
     onenterframe: function() {
         var input = game.input;
         if (input.pressUp && this.posIndex > 0) {
@@ -93,13 +97,40 @@ var BaseMonster = Class.create(AvatarMonster, {
         
         this.action = "appear";
         this.posIndex = Math.floor(Math.random()*3);
-        this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex;
+        this.update = this.appear;
+        this.offsetY = 0;
+        
+        this.updateY();
     },
+    
     onenterframe: function() {
-    }
-})
+        if (this.update) this.update();
+    },
+    
+    updateY: function() {
+        this.y = CHARACTER_BASE_Y + CHARACTER_STEP_Y*this.posIndex + this.offsetY;
+    },
+    
+    appear: function() {
+        if (this.action == "stop") {
+            this.update = this.advance;
+        }
+    },
+    
+    advance: function() {
+        this.x -= 2;
+    },
+});
 
-
+// ドラゴン
+var Dragon = Class.create(BaseMonster, {
+    initialize: function() {
+        BaseMonster.call(this, game.assets[DRAGON_IMAGE]);
+        
+        this.offsetY = -10;
+        this.updateY();
+    },
+});
 
 
 
