@@ -79,10 +79,11 @@ window.onload = function() {
             
             // プレイヤーとモンスターを衝突判定
             var playerX = player.x;
+            var playerX2= player.x+player.width
             for (var i=0,len=monsterList.length; i<len; ++i) {
                 var m = monsterList[i];
                 if (player.posIndex == m.posIndex) {
-                    if (m.x < playerX && playerX < m.x+m.width) {
+                    if (m.x < playerX && playerX < m.x+m.width || m.x < playerX2 && playerX < m.x+m.width) {
                         console.log("hit");
                     }
                 }
