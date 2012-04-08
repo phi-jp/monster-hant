@@ -16,11 +16,16 @@ var BG2 = IMAGE_PATH + "avatarBg2.png";
 var BG3 = IMAGE_PATH + "avatarBg3.png";
 var BUG_IMAGE       = EXAMPLE_PATH + "monster/monster1.gif";
 var DRAGON_IMAGE    = EXAMPLE_PATH + "monster/bigmonster1.gif";
+
+var MAIN_BGM        = "http://enchantjs.com/assets/sounds/bgm02.wav";  // メインBGM
+var APPEAR_SE       = "http://enchantjs.com/assets/sounds/se3.wav";    // 出現時SE
+
 var RESOURCE = [
     START_IMAGE, END_IMAGE,
     BG1, BG2, BG3,
     BUG_IMAGE,
     DRAGON_IMAGE,
+    MAIN_BGM, APPEAR_SE,
 ];
 // nineleap 対応
 enchant.nineleap = { assets: [START_IMAGE, END_IMAGE] };
@@ -95,6 +100,9 @@ window.onload = function() {
                 monster.x = 240;
                 scene.addChild(monster);
                 monsterList.push(monster);
+                
+                // 出現 SE 再生
+                game.assets[APPEAR_SE].clone().play();
             }
             
             // プレイヤーとモンスターを衝突判定
@@ -106,8 +114,7 @@ window.onload = function() {
                     var mx = m.x+20;
                     var mx2= m.x+m.width-20;
                     if (mx < playerX && playerX < mx2 || mx < playerX2 && playerX < mx2) {
-                        console.log("hit");
-                        game.end();
+                        endGame();
                     }
                 }
             }
@@ -139,9 +146,31 @@ window.onload = function() {
                 game.monsterInterval = 30;
                 game.dragonRate = 20;
             }
+            
+            // BGM 再生
+            game.assets[MAIN_BGM].play();
         };
     };
     game.start();
+};
+
+// ゲーム終了
+var endGame = function() {
+    var TITLE_TABLE = [
+        "ヨケモンもどき",
+        "ヨケモン見習い",
+        "ヨケモン社会人",
+        "ヨケモンマニア",
+        "ヨケモンマスター",
+    ];
+    var time  = Math.floor(game.frame/game.fps);
+    var tIndex= Math.floor(time/10);
+    tIndex = (tIndex >= TITLE_TABLE.length) ? TITLE_TABLE.length-1 : tIndex;
+    var title = TITLE_TABLE[tIndex];
+    var score = time * 100;
+    var msg   = "あなたのスコアは" + score + "です. 称号「" + title + "』";
+    console.log(score, msg);
+    game.end(score, msg);
 };
 
 // プレイヤー
