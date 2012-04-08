@@ -69,7 +69,6 @@ window.onload = function() {
         
         game.onenterframe = function() {
             // モンスター生成
-            
             if (game.frame % game.monsterInterval == 0) {
                 var monster = new Dragon();
                 monster.x = 240;
@@ -100,6 +99,20 @@ window.onload = function() {
             // タイマー更新
             var time = Math.floor(game.frame / game.fps);
             timerLabel.text = "Time : " + time;
+            
+            // 難易度変更
+            if (game.frame == 300) {
+                game.monsterInterval = 90;
+            }
+            else if (game.frame == 600) {
+                game.monsterInterval = 60;
+            }
+            else if (game.frame == 900) {
+                game.monsterInterval = 40;
+            }
+            else if (game.frame == 1200) {
+                game.monsterInterval = 30;
+            }
         };
     };
     game.start();
