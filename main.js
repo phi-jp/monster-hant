@@ -8,6 +8,8 @@ enchant();
 var EXAMPLE_PATH    = "lib/enchant.js/examples/avatar/";
 var IMAGE_PATH      = "lib/enchant.js/images/";
 
+var START_IMAGE     = IMAGE_PATH + "start.png";
+var END_IMAGE       = IMAGE_PATH + "end.png";
 var AVATAR_CODE     = "1:3:0:2009:2109:27540";
 var BG1 = IMAGE_PATH + "avatarBg1.png";
 var BG2 = IMAGE_PATH + "avatarBg2.png";
@@ -15,10 +17,13 @@ var BG3 = IMAGE_PATH + "avatarBg3.png";
 var BUG_IMAGE       = EXAMPLE_PATH + "monster/monster1.gif";
 var DRAGON_IMAGE    = EXAMPLE_PATH + "monster/bigmonster1.gif";
 var RESOURCE = [
+    START_IMAGE, END_IMAGE,
     BG1, BG2, BG3,
     BUG_IMAGE,
     DRAGON_IMAGE,
 ];
+// nineleap 対応
+enchant.nineleap = { assets: [START_IMAGE, END_IMAGE] };
 
 // 定数
 var BG_Y = 50;
@@ -31,6 +36,7 @@ var game = null;
 var bg   = null;
 var player = null;
 var monsterList = null;
+var timerLabel = null;
 
 window.onload = function() {
     game = new Game(320, 320);
@@ -41,6 +47,8 @@ window.onload = function() {
         // 背景を無理矢理対応
         for (var i=1; i<=3; ++i)
             game.assets["avatarBg"+i+".png"] = game.assets[IMAGE_PATH + "avatarBg"+i+".png"];
+        game.assets["start.png"]    = game.assets[START_IMAGE];
+        game.assets["end.png"]      = game.assets[END_IMAGE];
         
         // セットアップ
         var scene = game.rootScene;
@@ -58,17 +66,22 @@ window.onload = function() {
         scene.addChild(player);
         player.y = CHARACTER_BASE_Y;
         
-        // アバターモンスター
-        monsterList = [];
+        scene.onenter = function() {
+            // 初期化
+            game.frame = 0;
+            
+            // アバターモンスター
+            monsterList = [];
+            
+            // タイマー表示
+            timerLabel = new Label();
+            scene.addChild(timerLabel);
+            timerLabel.moveTo(10, 10);
+            timerLabel.color = "white";
+            timerLabel.text = "";
+        };
         
-        // タイマー表示
-        var timerLabel = new Label();
-        scene.addChild(timerLabel);
-        timerLabel.moveTo(10, 10);
-        timerLabel.color = "white";
-        timerLabel.text = "";
-        
-        game.onenterframe = function() {
+        scene.onenterframe = function() {
             // モンスター生成
             if (game.frame % game.monsterInterval == 0) {
                 var monster;
@@ -94,7 +107,7 @@ window.onload = function() {
                     var mx2= m.x+m.width-20;
                     if (mx < playerX && playerX < mx2 || mx < playerX2 && playerX < mx2) {
                         console.log("hit");
-                        alert();
+                        game.end();
                     }
                 }
             }
