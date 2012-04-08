@@ -46,6 +46,7 @@ window.onload = function() {
         var scene = game.rootScene;
         game.rootScene.backgroundColor = "black";
         game.monsterInterval = 120;
+        game.dragomRate = 0;
         
         // 背景
         bg = new AvatarBG(1);
@@ -70,7 +71,14 @@ window.onload = function() {
         game.onenterframe = function() {
             // モンスター生成
             if (game.frame % game.monsterInterval == 0) {
-                var monster = new Dragon();
+                var monster;
+                var r = Math.floor(Math.random()*100);
+                if (r < game.dragonRate) {
+                    monster = new Dragon();
+                }
+                else {
+                    monster = new Bug();
+                }
                 monster.x = 240;
                 scene.addChild(monster);
                 monsterList.push(monster);
@@ -82,8 +90,11 @@ window.onload = function() {
             for (var i=0,len=monsterList.length; i<len; ++i) {
                 var m = monsterList[i];
                 if (player.posIndex == m.posIndex) {
-                    if (m.x < playerX && playerX < m.x+m.width || m.x < playerX2 && playerX < m.x+m.width) {
+                    var mx = m.x+20;
+                    var mx2= m.x+m.width-20;
+                    if (mx < playerX && playerX < mx2 || mx < playerX2 && playerX < mx2) {
                         console.log("hit");
+                        alert();
                     }
                 }
             }
@@ -109,9 +120,11 @@ window.onload = function() {
             }
             else if (game.frame == 900) {
                 game.monsterInterval = 40;
+                game.dragonRate = 10;
             }
             else if (game.frame == 1200) {
                 game.monsterInterval = 30;
+                game.dragonRate = 20;
             }
         };
     };
@@ -213,7 +226,7 @@ var Bug = Class.create(BaseMonster, {
     initialize: function() {
         BaseMonster.call(this, game.assets[BUG_IMAGE]);
         
-        this.speed = 2;
+        this.speed = 4;
     }
 });
 
@@ -223,7 +236,7 @@ var Dragon = Class.create(BaseMonster, {
     initialize: function() {
         BaseMonster.call(this, game.assets[DRAGON_IMAGE]);
         
-        this.speed = 4;
+        this.speed = 6;
         this.offsetY = -20;
         this.updateY();
     },
