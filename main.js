@@ -5,7 +5,6 @@
 enchant();
 
 // リソース
-var EXAMPLE_PATH    = "lib/enchant.js/examples/avatar/";
 var IMAGE_PATH      = "lib/enchant.js/images/";
 
 var START_IMAGE     = IMAGE_PATH + "start.png";
@@ -14,8 +13,8 @@ var AVATAR_CODE     = "1:3:0:2009:2109:27540";
 var BG1 = IMAGE_PATH + "avatarBg1.png";
 var BG2 = IMAGE_PATH + "avatarBg2.png";
 var BG3 = IMAGE_PATH + "avatarBg3.png";
-var BUG_IMAGE       = EXAMPLE_PATH + "monster/monster1.gif";
-var DRAGON_IMAGE    = EXAMPLE_PATH + "monster/bigmonster1.gif";
+var BUG_IMAGE       = IMAGE_PATH + "monster/monster1.gif";
+var DRAGON_IMAGE    = IMAGE_PATH + "monster/bigmonster1.gif";
 
 var MAIN_BGM        = "http://enchantjs.com/assets/sounds/bgm02.wav";  // メインBGM
 var APPEAR_SE       = "http://enchantjs.com/assets/sounds/se3.wav";    // 出現時SE
